@@ -1,88 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskZen - Calming Task Manager</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskZen ✿ Make productivity feel good</title>
+  <meta name="description" content="TaskZen — your tasks, your habits, your little victories. Tasks, calendar, kanban, habits, focus timer, achievements and a Zen Garden that grows with you.">
+  <meta name="theme-color" content="#7C5CFF">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✿</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply the saved theme before first paint to avoid a flash.
+    try {
+      var s = JSON.parse(localStorage.getItem('taskzen:v2') || '{}');
+      var t = (s.settings && s.settings.theme) || 'system';
+      if (t === 'system') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-leaf"></i> TaskZen</h1>
-            <p class="subtitle">Find peace in productivity</p>
-        </header>
+  <a class="skip-link" href="#view">Skip to content</a>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✿</span>
+        <div><strong>TaskZen</strong><span>Make productivity feel good</span></div>
+      </div>
+      <nav>
+        <p class="nav-heading">Main menu</p>
+        <ul id="nav"></ul>
+      </nav>
+      <div class="sidebar-level" id="sidebar-level"></div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebar-scrim"></div>
 
-        <div class="app-container">
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <h3>Categories</h3>
-                    <button id="add-category-btn" class="icon-btn"><i class="fas fa-plus"></i></button>
-                </div>
-                <ul id="category-list">
-                    <li class="active" data-category="all">All Tasks</li>
-                    <li data-category="work"><i class="fas fa-briefcase"></i> Work</li>
-                    <li data-category="personal"><i class="fas fa-home"></i> Personal</li>
-                    <li data-category="health"><i class="fas fa-heartbeat"></i> Health</li>
-                </ul>
-                <div class="stats">
-                    <div class="stat-item">
-                        <span id="total-tasks">0</span>
-                        <span>Total</span>
-                    </div>
-                    <div class="stat-item">
-                        <span id="completed-tasks">0</span>
-                        <span>Completed</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-content">
-                <div class="task-input-container">
-                    <input type="text" id="task-input" placeholder="Add a new task...">
-                    <button id="add-task-btn"><i class="fas fa-plus"></i> Add</button>
-                </div>
-
-                <div class="filter-controls">
-                    <div class="filter-btn-group">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="active">Active</button>
-                        <button class="filter-btn" data-filter="completed">Completed</button>
-                    </div>
-                    <button id="clear-completed-btn">Clear Completed</button>
-                </div>
-
-                <ul id="task-list">
-                    <!-- Tasks will be added here dynamically -->
-                </ul>
-            </div>
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><i data-lucide="menu" class="ic"></i></button>
+        <form class="topbar-add" id="topbar-add" autocomplete="off">
+          <i data-lucide="sparkles" class="ic"></i>
+          <input id="topbar-add-input" aria-label="Quick add a task" placeholder="Quick add: “Call John tomorrow at 10 #work !high”">
+          <kbd>N</kbd>
+        </form>
+        <div class="topbar-right">
+          <a href="#/focus" class="focus-pill" id="focus-pill" hidden></a>
+          <button class="icon-btn" id="theme-btn" type="button" aria-label="Toggle dark mode"><i data-lucide="moon" class="ic"></i></button>
+          <a href="#/settings" class="profile-btn" id="profile-btn" aria-label="Profile and settings"></a>
         </div>
+      </header>
+      <main id="view" tabindex="-1"></main>
     </div>
+  </div>
 
-    <!-- Modals -->
-    <div id="category-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Add New Category</h3>
-            <input type="text" id="new-category-input" placeholder="Category name">
-            <div class="icon-selection">
-                <h4>Select an icon:</h4>
-                <div class="icon-options">
-                    <i class="fas fa-briefcase" data-icon="briefcase"></i>
-                    <i class="fas fa-home" data-icon="home"></i>
-                    <i class="fas fa-heartbeat" data-icon="heartbeat"></i>
-                    <i class="fas fa-book" data-icon="book"></i>
-                    <i class="fas fa-utensils" data-icon="utensils"></i>
-                    <i class="fas fa-dumbbell" data-icon="dumbbell"></i>
-                    <i class="fas fa-palette" data-icon="palette"></i>
-                    <i class="fas fa-music" data-icon="music"></i>
-                </div>
-            </div>
-            <button id="save-category-btn">Save Category</button>
-        </div>
-    </div>
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Task details"></aside>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
 
-    <script src="script.js"></script>
+  <noscript><p style="padding:2rem;font-family:sans-serif">TaskZen needs JavaScript to run.</p></noscript>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
